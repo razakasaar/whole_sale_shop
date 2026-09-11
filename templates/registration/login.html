@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card" style="max-width:440px;margin:60px auto">
+<h1>Sign in to your shop</h1>
+<form method="post">
+{% csrf_token %}
+{{ form.as_p }}
+<input type="hidden" name="next" value="{{ next }}">
+<button>Sign in</button>
+</form>
+</section>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+<h1>{{ invoice.reference }}</h1>
+<p>{{ invoice.get_kind_display }} · {{ invoice.created_at|date:"d M Y H:i" }}</p>
+<h2>{{ invoice.party_name }}</h2>
+<div class="table"><table>
+<thead><tr><th>Product</th><th>Quantity</th><th>Unit price</th><th>Total</th></tr></thead>
+<tbody>
+{% for line in invoice.lines.all %}
+<tr><td>{{ line.name }}</td><td>{{ line.quantity }} {{ line.unit }}</td><td>Rs {{ line.price_display }}</td><td>Rs {{ line.total_display }}</td></tr>
+{% endfor %}
+</tbody>
+</table></div>
+<p><strong>Total: Rs {{ invoice.total_display }}</strong></p>
+<p>Paid: Rs {{ invoice.paid_display }} · Outstanding: Rs {{ invoice.due_display }}</p>
+<p>Status: {{ invoice.status }}</p>
+<div class="actions no-print">
+<button type="button" onclick="window.print()">Print / save PDF</button>
+{% if invoice.kind == "S" and invoice.paid < invoice.total %}
+<a class="button" href="{% url 'payment' invoice.pk %}">Receive payment</a>
+{% endif %}
+<a href="/">Dashboard</a>
+</div>
+<h2>Later payments</h2>
+{% for receipt in invoice.receipts.all %}
+<p>{{ receipt.created_at|date:"d M Y H:i" }} — Rs {{ receipt.amount_display }}</p>
+{% empty %}<p>No later payments recorded.</p>{% endfor %}
+</section>
+{% endblock %}

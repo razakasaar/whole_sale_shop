@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Your shop, at a glance</h1>
+<div class="actions">
+<a class="button" href="{% url 'new_invoice' %}">Record sale or purchase</a>
+<a href="{% url 'export_csv' %}">Export sales CSV</a>
+</div>
+<p class="muted">All-time totals. Gross profit excludes expenses and tax.</p>
+<div class="stats">
+<div class="card">Sales<strong>Rs {{ sales }}</strong></div>
+<div class="card">Gross profit<strong>Rs {{ profit }}</strong></div>
+<div class="card">Collected from customers<strong>Rs {{ cash }}</strong></div>
+<div class="card">Customer dues<strong>Rs {{ dues }}</strong></div>
+</div>
+<section class="card">
+<h2>Inventory</h2>
+<form method="get" class="actions">
+<input name="q" value="{{ query }}" placeholder="Search product names" aria-label="Search products" style="max-width:350px">
+<button>Search</button><a href="/">Clear</a>
+</form>
+<div class="table"><table>
+<thead><tr><th>Product</th><th>Stock</th><th>Average cost</th><th>Selling price</th><th>Status</th></tr></thead>
+<tbody>
+{% for product in products %}
+<tr>
+<td>{{ product.name }}<br><small>{{ product.sku }}</small></td>
+<td>{{ product.stock }} {{ product.unit }}</td>
+<td>Rs {{ product.average_cost }}</td><td>Rs {{ product.selling_price }}</td>
+<td>{% if product.stock <= product.reorder_level %}Restock{% else %}In stock{% endif %}</td>
+</tr>
+{% empty %}<tr><td colspan="5">No products found. Add products in administration.</td></tr>{% endfor %}
+</tbody>
+</table></div>
+</section>
+<section class="card">
+<h2>Recent invoices</h2>
+<p class="muted">Latest 100 documents. CSV export includes all sales.</p>
+<div class="table"><table>
+<thead><tr><th>Reference</th><th>Type</th><th>Customer / supplier</th><th>Total</th><th>Due</th><th>Status</th></tr></thead>
+<tbody>
+{% for invoice in invoices %}
+<tr>
+<td><a href="{% url 'invoice' invoice.pk %}">{{ invoice.reference }}</a></td>
+<td>{{ invoice.get_kind_display }}</td><td>{{ invoice.party_name }}</td>
+<td>Rs {{ invoice.total_display }}</td><td>Rs {{ invoice.due_display }}</td><td>{{ invoice.status }}</td>
+</tr>
+{% empty %}<tr><td colspan="6">Record a purchase to enter opening stock.</td></tr>{% endfor %}
+</tbody>
+</table></div>
+</section>
+<section class="card">
+<h2>Customer balances</h2>
+<div class="table"><table>
+<thead><tr><th>Customer</th><th>Outstanding</th></tr></thead>
+<tbody>
+{% for customer in customers %}<tr><td>{{ customer.name }}</td><td>Rs {{ customer.due }}</td></tr>
+{% empty %}<tr><td colspan="2">No customer sales yet.</td></tr>{% endfor %}
+</tbody>
+</table></div>
+</section>
+{% endblock %}

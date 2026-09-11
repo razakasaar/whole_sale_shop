@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Record an invoice</h1>
+<p>Add products and contacts in administration first. Leave unused lines blank.</p>
+<form method="post">
+{% csrf_token %}
+<section class="card">{{ form.as_p }}</section>
+<section class="card">
+<h2>Products</h2>
+<p class="muted">Enter the agreed unit price. For purchases, enter the purchase cost.</p>
+{{ lines.management_form }}
+{{ lines.non_form_errors }}
+{% for line in lines %}
+<div class="line">{{ line.as_p }}</div>
+{% endfor %}
+</section>
+<button>Save invoice</button>
+<a href="/">Cancel</a>
+</form>
+{% endblock %}

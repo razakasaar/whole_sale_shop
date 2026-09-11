@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stockroom · Shop management</title>
+<style>
+:root{font:16px/1.5 system-ui,sans-serif;color:#17342e;background:#f3f6f4}
+*{box-sizing:border-box}body{margin:0}a{color:#176c53}
+header{background:#17342e;color:white;padding:20px 5%;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+header a{color:white;text-decoration:none}header strong{font-size:24px;margin-right:auto}
+main{max-width:1200px;margin:30px auto;padding:0 20px}
+.card{background:white;border:1px solid #dce5df;border-radius:12px;padding:22px;margin:20px 0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.stats .card{margin:0}.stats strong{display:block;font-size:25px;margin-top:10px}
+button,.button{background:#176c53;color:white;border:0;border-radius:6px;padding:11px 16px;cursor:pointer;text-decoration:none;display:inline-block;font:inherit}
+input,select,textarea{font:inherit;width:100%;padding:10px;border:1px solid #adbdb2;border-radius:6px}
+label{display:block;font-weight:600;margin-bottom:5px}.helptext{display:block;color:#607368;font-size:13px}
+table{width:100%;border-collapse:collapse;text-align:left}th,td{padding:12px;border-bottom:1px solid #e2e9e4}
+th{font-size:13px;color:#567063}.table{overflow-x:auto}h1,h2{line-height:1.2}
+.actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.errorlist{color:#a32121}.message{background:#e0f3e6;padding:12px;border-radius:6px}
+.line{display:grid;grid-template-columns:2fr 1fr 1fr;gap:15px;padding:10px 0;border-bottom:1px solid #dce5df}
+.line .errorlist{grid-column:1/-1}header form{margin:0}
+.muted{color:#607368}footer{margin:30px 0;color:#607368;font-size:13px}
+@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}.line{display:block}main{padding:0 12px}.card{padding:16px}td,th{white-space:nowrap}}
+@media print{header,.no-print,footer,.message{display:none!important}main{margin:0;max-width:none}.card{border:0;padding:0}body{background:white}}
+</style>
+</head>
+<body>
+<header>
+<strong>Stockroom</strong>
+{% if user.is_authenticated %}
+<a href="/">Dashboard</a>
+<a href="{% url 'new_invoice' %}">New invoice</a>
+<a href="/admin/shop/product/">Products</a>
+<a href="/admin/shop/party/">Contacts</a>
+<form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Sign out</button></form>
+{% endif %}
+</header>
+<main>
+{% for message in messages %}<p class="message">{{ message }}</p>{% endfor %}
+{% block content %}{% endblock %}
+<footer>Stockroom · Amounts in PKR · Maintain regular database backups.</footer>
+</main>
+</body>
+</html>

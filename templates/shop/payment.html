@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+<h1>Receive customer payment</h1>
+<p>{{ invoice.reference }} · {{ invoice.party_name }}</p>
+<p>Outstanding: Rs {{ invoice.due_display }}</p>
+<form method="post">
+{% csrf_token %}
+{{ form.as_p }}
+<button>Save payment</button>
+</form>
+</section>
+{% endblock %}
